@@ -1,0 +1,18 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:base"
+  ],
+  "timezone": "Asia/Tokyo",
+  "schedule": ["after 5am on the first day of the month"],
+  "labels": ["renovate"],
+  "rangeStrategy": "bump",
+  "prHourlyLimit": 0,
+  "packageRules": [
+    {
+      "matchPackagePatterns": ["^dagger.io/dagger$"],
+      "updateTypes": ["major", "minor"],
+      "enabled": false
+    }
+  ]
+}
