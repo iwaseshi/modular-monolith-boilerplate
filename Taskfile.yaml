@@ -1,0 +1,31 @@
+version: "3"
+
+tasks:
+  build-callanotherapi-micro:
+    cmds:
+      - cmd: go build -tags=micro -o ./bin/callanotherapi_micro ./services/callanotherapi/main.go
+        dir: .
+    silent: false
+
+  build-callanotherapi-mono:
+    cmds:
+      - cmd: go build -tags=mono -o ./bin/callanotherapi_mono ./services/callanotherapi/main.go
+        dir: .
+    silent: false
+
+  build-healthcheck:
+    cmds:
+      - cmd: go build -o ./bin/healthcheck ./services/healthcheck/main.go
+        dir: .
+    silent: false
+
+  build-monoapp:
+    cmds:
+      - cmd: go build -o ./bin/monoapp ./main.go
+        dir: .
+    silent: false
+
+  build-micro-app:
+    cmds:
+      - task: build-callanotherapi-micro
+      - task: build-healthcheck

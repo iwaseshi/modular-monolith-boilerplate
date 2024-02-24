@@ -5,7 +5,7 @@ import (
 )
 
 const (
-	port = ":8080"
+	DefaultPort = ":8080"
 )
 
 var (
@@ -32,6 +32,9 @@ func (rg *routerGroup) RegisterPOST(postPath string, fun gin.HandlerFunc) {
 	rg.group.POST(postPath, fun)
 }
 
-func Run() error {
+func Run(port string) error {
+	if port == "" {
+		port = DefaultPort
+	}
 	return router.Run(port)
 }

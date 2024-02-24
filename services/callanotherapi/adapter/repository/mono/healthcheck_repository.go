@@ -1,4 +1,4 @@
-package repository
+package mono
 
 import (
 	"modular-monolith-boilerplate/pkg/di"

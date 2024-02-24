@@ -8,6 +8,10 @@ import (
 	"net/http"
 )
 
+var (
+	baseURL = "http://localhost:8080"
+)
+
 type RestClient struct {
 }
 
@@ -16,7 +20,7 @@ func NewRestClient() *RestClient {
 }
 
 func (rc *RestClient) CallGet(path string, responseType interface{}) (interface{}, error) {
-	resp, err := http.Get("http://" + path)
+	resp, err := http.Get(baseURL + path)
 	// URLがnilだったり、Timeoutが発生した場合といったサーバーとの疎通前のエラーを検証する。
 	if err != nil {
 		logger.Default().Error("Error Request:", err)
