@@ -25,7 +25,7 @@ func NewMicroHealthCheckRepository() repository.HealthCheckRepository {
 
 func (hcr *MicroHealthCheckRepository) Ping(c *gin.Context) (string, error) {
 	message := ""
-	resp, err := hcr.restClient.CallGet("/health-check/ping", message)
+	resp, err := hcr.restClient.CallGet(restapi.InternalApiBaseURL+"/health-check/ping", message)
 	if err != nil {
 		return "", err
 	}

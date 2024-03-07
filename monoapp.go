@@ -2,6 +2,7 @@ package main
 
 import (
 	"modular-monolith-boilerplate/pkg/restapi"
+	"os"
 
 	callanotherapi "modular-monolith-boilerplate/services/callanotherapi/adapter/controller"
 
@@ -14,5 +15,9 @@ import (
 func main() {
 	healthcheck.RegisterRouting()
 	callanotherapi.RegisterRouting()
-	_ = restapi.Run(restapi.DefaultPort)
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = restapi.DefaultPort
+	}
+	_ = restapi.Run(port)
 }

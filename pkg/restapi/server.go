@@ -5,7 +5,7 @@ import (
 )
 
 const (
-	DefaultPort = ":8080"
+	DefaultPort = "8080"
 )
 
 var (
@@ -36,5 +36,5 @@ func Run(port string) error {
 	if port == "" {
 		port = DefaultPort
 	}
-	return router.Run(port)
+	return router.Run(":" + port)
 }

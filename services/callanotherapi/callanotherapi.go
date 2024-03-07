@@ -9,5 +9,5 @@ import (
 //nolint:unused
 func main() {
 	controller.RegisterRouting()
-	_ = restapi.Run(":8081")
+	_ = restapi.Run("8080")
 }
