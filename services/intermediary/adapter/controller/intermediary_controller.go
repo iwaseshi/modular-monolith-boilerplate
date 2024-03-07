@@ -32,8 +32,8 @@ func NewIntermediaryController(intermediaryUseCase usecase.IntermediaryUseCase) 
 func (ic *IntermediaryController) Call(c *restapi.Context) {
 	message, err := ic.intermediaryUseCase.Call(c)
 	if err != nil {
-		c.GinContext().JSON(err.Code, err.Error())
+		c.ApiResponse(err.Code, err.Error())
 		return
 	}
-	c.GinContext().JSON(200, message)
+	c.ApiResponse(200, message)
 }

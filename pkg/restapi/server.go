@@ -62,6 +62,10 @@ func (c *Context) StandardContext() context.Context {
 	return c.stdCtx
 }
 
+func (c *Context) ApiResponse(statusCode int, body interface{}) {
+	c.ginCtx.JSON(statusCode, body)
+}
+
 type HandlerFunc func(*Context)
 
 func Handler(handler HandlerFunc) gin.HandlerFunc {
