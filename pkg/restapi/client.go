@@ -6,11 +6,17 @@ import (
 	"io"
 	"modular-monolith-boilerplate/pkg/logger"
 	"net/http"
+	"os"
 )
 
-var (
-	InternalApiBaseURL = "http://localhost:8080"
-)
+var InternalApiBaseURL string
+
+func init() {
+	path := os.Getenv("INTERNAL_API_BASE_URL")
+	if path == "" {
+		InternalApiBaseURL = "http://localhost:8080"
+	}
+}
 
 type RestClient struct {
 }

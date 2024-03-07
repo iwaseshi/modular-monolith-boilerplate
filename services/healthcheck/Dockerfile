@@ -7,6 +7,7 @@ RUN go mod download
 COPY . .
 RUN go build -o healthcheck ./services/healthcheck/main.go
 
-FROM gcr.io/distroless/base
+# glibcのVerに合わせたイメージを使用する https://repology.org/project/glibc/versions
+FROM ubuntu:22.04  
 COPY --from=builder /workspace/healthcheck /healthcheck
 CMD ["/healthcheck"]

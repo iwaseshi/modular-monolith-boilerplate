@@ -9,6 +9,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var (
+	healthCheckBasePath = "https://healthcheck-rftndbrsdq-an.a.run.app/health-check/ping"
+)
+
 func init() {
 	di.RegisterBean(NewMicroHealthCheckRepository)
 }
@@ -25,7 +29,7 @@ func NewMicroHealthCheckRepository() repository.HealthCheckRepository {
 
 func (hcr *MicroHealthCheckRepository) Ping(c *gin.Context) (string, error) {
 	message := ""
-	resp, err := hcr.restClient.CallGet(restapi.InternalApiBaseURL+"/health-check/ping", message)
+	resp, err := hcr.restClient.CallGet(healthCheckBasePath, message)
 	if err != nil {
 		return "", err
 	}

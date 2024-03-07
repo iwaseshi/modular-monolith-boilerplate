@@ -1,8 +1,8 @@
 version: "3"
 
 env:
-  IMAGE_NAME: gcr.io/modular-monolith-sample/monolith/app
-  SERVICE_NAME: monolith
+  IMAGE_NAME: gcr.io/modular-monolith-sample/callanotherapi/app
+  SERVICE_NAME: callanotherapi
   REGION: asia-northeast1
 
 tasks:
@@ -12,26 +12,9 @@ tasks:
         dir: .
     silent: false
 
-  build-healthcheck:
-    cmds:
-      - cmd: go build -o ./bin/healthcheck ./services/healthcheck/main.go
-        dir: .
-    silent: false
-
-  build-monoapp:
-    cmds:
-      - cmd: go build -o ./bin/monoapp ./nonoapp.go
-        dir: .
-    silent: false
-
-  build-micro-app:
-    cmds:
-      - task: build-callanotherapi-micro
-      - task: build-healthcheck
-
   docker-build:
     cmds:
-      - cmd: docker build -t $IMAGE_NAME:latest .
+      - cmd: docker build -t $IMAGE_NAME:latest -f Dockerfile ../..
 
   docker-push:
     cmds:
