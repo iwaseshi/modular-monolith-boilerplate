@@ -35,10 +35,10 @@ func NewHealthCheckController(healthCheckUseCase usecase.HealthCheckUseCase) *He
 func (hcc *HealthCheckController) Ping(c *restapi.Context) {
 	message, err := hcc.healthCheckUseCase.Ping(c)
 	if err != nil {
-		c.GinContext().JSON(500, err)
+		c.ApiResponse(500, err)
 		return
 	}
-	c.GinContext().JSON(200, message)
+	c.ApiResponse(200, message)
 }
 
 func (hcc *HealthCheckController) Readiness(c *restapi.Context) {
@@ -50,8 +50,8 @@ func (hcc *HealthCheckController) Readiness(c *restapi.Context) {
 	}
 	res, err := hcc.healthCheckUseCase.Readiness(c, req)
 	if err != nil {
-		c.GinContext().JSON(500, err.Error())
+		c.ApiResponse(500, err.Error())
 		return
 	}
-	c.GinContext().JSON(200, res)
+	c.ApiResponse(200, res)
 }
