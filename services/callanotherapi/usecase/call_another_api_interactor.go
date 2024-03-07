@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"modular-monolith-boilerplate/pkg/di"
+	errors "modular-monolith-boilerplate/pkg/dto"
 	"modular-monolith-boilerplate/services/callanotherapi/domain/repository"
 
 	"github.com/gin-gonic/gin"
@@ -12,7 +13,7 @@ func init() {
 }
 
 type CallAnotherApiUseCase interface {
-	Call(c *gin.Context) (*string, error)
+	Call(c *gin.Context) (*string, *errors.ApiError)
 }
 
 type CallAnotherApiInteractor struct {
@@ -26,10 +27,10 @@ func NewCallAnotherApiInteractorr(healthCheckRepository repository.HealthCheckRe
 
 }
 
-func (hci *CallAnotherApiInteractor) Call(c *gin.Context) (*string, error) {
+func (hci *CallAnotherApiInteractor) Call(c *gin.Context) (*string, *errors.ApiError) {
 	message, err := hci.healthCheckRepository.Ping(c)
 	if err != nil {
-		return nil, err
+		return nil, errors.NewSystemError(err)
 	}
 	return &message, nil
 }
