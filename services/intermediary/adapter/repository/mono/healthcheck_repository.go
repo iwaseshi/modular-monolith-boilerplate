@@ -2,8 +2,8 @@ package mono
 
 import (
 	"modular-monolith-boilerplate/pkg/di"
-	"modular-monolith-boilerplate/services/callanotherapi/domain/repository"
 	"modular-monolith-boilerplate/services/healthcheck/usecase"
+	"modular-monolith-boilerplate/services/intermediary/domain/repository"
 
 	"github.com/gin-gonic/gin"
 )

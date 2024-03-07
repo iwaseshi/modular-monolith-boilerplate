@@ -6,9 +6,9 @@ env:
   REGION: asia-northeast1
 
 tasks:
-  build-callanotherapi-micro:
+  build-intermediary-micro:
     cmds:
-      - cmd: go build -tags=micro -o ./bin/callanotherapi_micro ./services/callanotherapi/main.go
+      - cmd: go build -tags=micro -o ./bin/intermediary_micro ./services/intermediary/main.go
         dir: .
     silent: false
 
@@ -26,7 +26,7 @@ tasks:
 
   build-micro-app:
     cmds:
-      - task: build-callanotherapi-micro
+      - task: build-intermediary-micro
       - task: build-healthcheck
 
   docker-build:
