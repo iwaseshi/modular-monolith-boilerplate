@@ -1,4 +1,4 @@
-module modular-monolith-boilerplate/services/callanotherapi
+module modular-monolith-boilerplate/services/intermediary
 
 go 1.22.0
 

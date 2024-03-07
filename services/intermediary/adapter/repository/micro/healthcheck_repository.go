@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"modular-monolith-boilerplate/pkg/di"
 	"modular-monolith-boilerplate/pkg/restapi"
-	"modular-monolith-boilerplate/services/callanotherapi/domain/repository"
+	"modular-monolith-boilerplate/services/intermediary/domain/repository"
 
 	"github.com/gin-gonic/gin"
 )

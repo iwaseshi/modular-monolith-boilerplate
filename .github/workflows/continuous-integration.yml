@@ -23,7 +23,7 @@ jobs:
             ${{ runner.os }}-go-
       - name: Run test
         run: |
-          go test . ./pkg/... ./services/callanotherapi/... ./services/healthcheck/... ./services/intersection...
+          go test . ./pkg/... ./services/intermediary/... ./services/healthcheck/... ./services/intersection...
       - name: Run lint
         uses: golangci/golangci-lint-action@v4
         with:
