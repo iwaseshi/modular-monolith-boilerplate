@@ -4,8 +4,6 @@ import (
 	"modular-monolith-boilerplate/pkg/di"
 	"modular-monolith-boilerplate/pkg/restapi"
 	"modular-monolith-boilerplate/services/intermediary/usecase"
-
-	"github.com/gin-gonic/gin"
 )
 
 func init() {
@@ -14,28 +12,28 @@ func init() {
 
 func RegisterRouting() {
 	_ = di.GetContainer().Invoke(
-		func(caa *IntermediaryApiController) {
+		func(ic *IntermediaryController) {
 			group := restapi.NewGroup("/call-another-api")
-			group.RegisterGET("/call", caa.Call)
+			group.RegisterGET("/call", restapi.Handler(ic.Call))
 		},
 	)
 }
 
-type IntermediaryApiController struct {
+type IntermediaryController struct {
 	intermediaryUseCase usecase.IntermediaryUseCase
 }
 
-func NewIntermediaryController(intermediaryUseCase usecase.IntermediaryUseCase) *IntermediaryApiController {
-	return &IntermediaryApiController{
+func NewIntermediaryController(intermediaryUseCase usecase.IntermediaryUseCase) *IntermediaryController {
+	return &IntermediaryController{
 		intermediaryUseCase: intermediaryUseCase,
 	}
 }
 
-func (caa *IntermediaryApiController) Call(c *gin.Context) {
-	message, err := caa.intermediaryUseCase.Call(c)
+func (ic *IntermediaryController) Call(c *restapi.Context) {
+	message, err := ic.intermediaryUseCase.Call(c)
 	if err != nil {
-		c.JSON(err.Code, err.Message)
+		c.GinContext().JSON(err.Code, err.Error())
 		return
 	}
-	c.JSON(200, message)
+	c.GinContext().JSON(200, message)
 }

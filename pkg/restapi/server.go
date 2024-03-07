@@ -1,6 +1,9 @@
 package restapi
 
 import (
+	"context"
+	"modular-monolith-boilerplate/pkg/logger"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -37,4 +40,34 @@ func Run(port string) error {
 		port = DefaultPort
 	}
 	return router.Run(":" + port)
+}
+
+type Context struct {
+	ginCtx *gin.Context
+	stdCtx context.Context
+}
+
+func NewContext(ginCtx *gin.Context) *Context {
+	return &Context{
+		ginCtx: ginCtx,
+		stdCtx: ginCtx.Request.Context(),
+	}
+}
+
+func (c *Context) GinContext() *gin.Context {
+	return c.ginCtx
+}
+
+func (c *Context) StandardContext() context.Context {
+	return c.stdCtx
+}
+
+type HandlerFunc func(*Context)
+
+func Handler(handler HandlerFunc) gin.HandlerFunc {
+	return func(ginCtx *gin.Context) {
+		customCtx := NewContext(ginCtx)
+		logger.RegisterInCtx(customCtx.StandardContext())
+		handler(customCtx)
+	}
 }

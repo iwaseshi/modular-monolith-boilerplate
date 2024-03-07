@@ -5,8 +5,6 @@ import (
 	"modular-monolith-boilerplate/pkg/di"
 	"modular-monolith-boilerplate/pkg/restapi"
 	"modular-monolith-boilerplate/services/intermediary/domain/repository"
-
-	"github.com/gin-gonic/gin"
 )
 
 var (
@@ -27,7 +25,7 @@ func NewMicroHealthCheckRepository() repository.HealthCheckRepository {
 	}
 }
 
-func (hcr *MicroHealthCheckRepository) Ping(c *gin.Context) (string, error) {
+func (hcr *MicroHealthCheckRepository) Ping(c *restapi.Context) (string, error) {
 	message := ""
 	resp, err := hcr.restClient.CallGet(healthCheckBasePath, message)
 	if err != nil {

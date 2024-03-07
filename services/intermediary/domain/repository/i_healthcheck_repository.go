@@ -1,9 +1,7 @@
 package repository
 
-import (
-	"github.com/gin-gonic/gin"
-)
+import "modular-monolith-boilerplate/pkg/restapi"
 
 type HealthCheckRepository interface {
-	Ping(c *gin.Context) (string, error)
+	Ping(c *restapi.Context) (string, error)
 }

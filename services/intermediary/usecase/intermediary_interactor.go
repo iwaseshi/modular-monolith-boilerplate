@@ -3,9 +3,8 @@ package usecase
 import (
 	"modular-monolith-boilerplate/pkg/di"
 	"modular-monolith-boilerplate/pkg/error"
+	"modular-monolith-boilerplate/pkg/restapi"
 	"modular-monolith-boilerplate/services/intermediary/domain/repository"
-
-	"github.com/gin-gonic/gin"
 )
 
 func init() {
@@ -13,7 +12,7 @@ func init() {
 }
 
 type IntermediaryUseCase interface {
-	Call(c *gin.Context) (*string, *error.ApiError)
+	Call(c *restapi.Context) (*string, *error.ApiError)
 }
 
 type IntermediaryInteractor struct {
@@ -27,8 +26,8 @@ func NewIntermediaryInteractorr(healthCheckRepository repository.HealthCheckRepo
 
 }
 
-func (hci *IntermediaryInteractor) Call(c *gin.Context) (*string, *error.ApiError) {
-	message, err := hci.healthCheckRepository.Ping(c)
+func (ii *IntermediaryInteractor) Call(c *restapi.Context) (*string, *error.ApiError) {
+	message, err := ii.healthCheckRepository.Ping(c)
 	if err != nil {
 		return nil, error.NewSystemError(err)
 	}

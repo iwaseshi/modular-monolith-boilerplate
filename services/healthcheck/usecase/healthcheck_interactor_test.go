@@ -1,16 +1,16 @@
 package usecase_test
 
 import (
+	"modular-monolith-boilerplate/pkg/restapi"
 	"modular-monolith-boilerplate/services/healthcheck/domain"
 	"modular-monolith-boilerplate/services/healthcheck/usecase"
 	"testing"
 
-	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestHealthCheckInteractor_Ping(t *testing.T) {
-	var ctx *gin.Context
+	var ctx *restapi.Context
 
 	hci := usecase.NewHealthCheckInteractor()
 
@@ -22,7 +22,7 @@ func TestHealthCheckInteractor_Ping(t *testing.T) {
 }
 
 func TestHealthCheckInteractor_Readiness(t *testing.T) {
-	var ctx *gin.Context
+	var ctx *restapi.Context
 
 	hci := usecase.NewHealthCheckInteractor()
 
@@ -38,8 +38,7 @@ func TestHealthCheckInteractor_Readiness(t *testing.T) {
 }
 
 func TestHealthCheckInteractor_Readiness_Shout(t *testing.T) {
-	var ctx *gin.Context
-
+	var ctx *restapi.Context
 	hci := usecase.NewHealthCheckInteractor()
 
 	req := &domain.ReadyRequest{
