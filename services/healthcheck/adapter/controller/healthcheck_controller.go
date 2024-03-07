@@ -3,6 +3,7 @@ package controller
 import (
 	"fmt"
 	"modular-monolith-boilerplate/pkg/di"
+	"modular-monolith-boilerplate/pkg/restapi"
 	"modular-monolith-boilerplate/services/healthcheck/domain"
 	"modular-monolith-boilerplate/services/healthcheck/usecase"
 
@@ -11,6 +12,16 @@ import (
 
 func init() {
 	di.RegisterBean(NewHealthCheckController)
+}
+
+func RegisterRouting() {
+	_ = di.GetContainer().Invoke(
+		func(hcc *HealthCheckController) {
+			group := restapi.NewGroup("/health-check")
+			group.RegisterGET("/ping", hcc.Ping)
+			group.RegisterPOST("/readiness", hcc.Readiness)
+		},
+	)
 }
 
 type HealthCheckController struct {

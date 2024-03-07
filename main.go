@@ -1,31 +1,23 @@
 package main
 
 import (
-	"modular-monolith-boilerplate/pkg/di"
 	"modular-monolith-boilerplate/pkg/restapi"
+	"os"
 
-	ac "modular-monolith-boilerplate/services/callanotherapi/adapter/controller"
-	hc "modular-monolith-boilerplate/services/healthcheck/adapter/controller"
+	callanotherapi "modular-monolith-boilerplate/services/callanotherapi/adapter/controller"
 
-	// micro mode
-	_ "modular-monolith-boilerplate/services/intersection/adapter/microrepository"
-	// mono mode
-	//_ "modular-monolith-boilerplate/services/intersection/adapter/monorepository"
+	// デフォルトではmonoModeで起動する。microで起動する場合は以下のコメントを外しmonoをコメントアウトする。
+	//_ "modular-monolith-boilerplate/services/callanotherapi/adapter/repository/micro"
+	_ "modular-monolith-boilerplate/services/callanotherapi/adapter/repository/mono"
+	healthcheck "modular-monolith-boilerplate/services/healthcheck/adapter/controller"
 )
 
 func main() {
-	_ = di.GetContainer().Invoke(
-		func(hcc *hc.HealthCheckController) {
-			group := restapi.NewGroup("/health-check")
-			group.RegisterGET("/ping", hcc.Ping)
-			group.RegisterPOST("/readiness", hcc.Readiness)
-		},
-	)
-	_ = di.GetContainer().Invoke(
-		func(caa *ac.CallAnotherApiController) {
-			group := restapi.NewGroup("/call-another-api")
-			group.RegisterGET("/call", caa.Call)
-		},
-	)
-	_ = restapi.Run()
+	healthcheck.RegisterRouting()
+	callanotherapi.RegisterRouting()
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = restapi.DefaultPort
+	}
+	_ = restapi.Run(port)
 }

@@ -1,0 +1,53 @@
+version: "3"
+
+env:
+  IMAGE_NAME: gcr.io/modular-monolith-sample/monolith/app
+  SERVICE_NAME: monolith
+  REGION: asia-northeast1
+
+tasks:
+  build-callanotherapi-micro:
+    cmds:
+      - cmd: go build -tags=micro -o ./bin/callanotherapi_micro ./services/callanotherapi/main.go
+        dir: .
+    silent: false
+
+  build-healthcheck:
+    cmds:
+      - cmd: go build -o ./bin/healthcheck ./services/healthcheck/main.go
+        dir: .
+    silent: false
+
+  build-monoapp:
+    cmds:
+      - cmd: go build -o ./bin/monoapp ./nonoapp.go
+        dir: .
+    silent: false
+
+  build-micro-app:
+    cmds:
+      - task: build-callanotherapi-micro
+      - task: build-healthcheck
+
+  docker-build:
+    cmds:
+      - cmd: docker build -t $IMAGE_NAME:latest .
+
+  docker-push:
+    cmds:
+      - cmd: docker push $IMAGE_NAME:latest
+
+  deploy-to-cloud-run:
+    cmds:
+      - cmd: gcloud run deploy $SERVICE_NAME --image $IMAGE_NAME:latest --platform managed --region $REGION --allow-unauthenticated
+
+  build-and-deploy:
+    desc: Build, Push and Deploy to Cloud Run
+    cmds:
+      - task: docker-build
+      - task: docker-push
+      - task: deploy-to-cloud-run
+
+  delete:
+    cmds:
+      - cmd: gcloud run services delete $SERVICE_NAME --region asia-northeast1 --platform managed

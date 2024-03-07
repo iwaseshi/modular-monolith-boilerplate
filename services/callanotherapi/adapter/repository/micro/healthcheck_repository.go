@@ -1,4 +1,4 @@
-package repository
+package micro
 
 import (
 	"fmt"
@@ -7,6 +7,10 @@ import (
 	"modular-monolith-boilerplate/services/callanotherapi/domain/repository"
 
 	"github.com/gin-gonic/gin"
+)
+
+var (
+	healthCheckBasePath = "https://healthcheck-rftndbrsdq-an.a.run.app/health-check/ping"
 )
 
 func init() {
@@ -25,7 +29,7 @@ func NewMicroHealthCheckRepository() repository.HealthCheckRepository {
 
 func (hcr *MicroHealthCheckRepository) Ping(c *gin.Context) (string, error) {
 	message := ""
-	resp, err := hcr.restClient.CallGet("localhost:8080/health-check/ping", message)
+	resp, err := hcr.restClient.CallGet(healthCheckBasePath, message)
 	if err != nil {
 		return "", err
 	}

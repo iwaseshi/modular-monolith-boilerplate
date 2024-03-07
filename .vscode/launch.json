@@ -16,9 +16,8 @@
             "type": "go",
             "request": "launch",
             "mode": "debug",
-            "program": "${workspaceFolder}/${input:debugTarget}",
+            "program": "${workspaceFolder}/main.go",
             "env": {},
-            "args": []
         }
     ]
 }

@@ -2,6 +2,7 @@ package controller
 
 import (
 	"modular-monolith-boilerplate/pkg/di"
+	"modular-monolith-boilerplate/pkg/restapi"
 	"modular-monolith-boilerplate/services/callanotherapi/usecase"
 
 	"github.com/gin-gonic/gin"
@@ -9,6 +10,15 @@ import (
 
 func init() {
 	di.RegisterBean(NewCallAnotherApiController)
+}
+
+func RegisterRouting() {
+	_ = di.GetContainer().Invoke(
+		func(caa *CallAnotherApiController) {
+			group := restapi.NewGroup("/call-another-api")
+			group.RegisterGET("/call", caa.Call)
+		},
+	)
 }
 
 type CallAnotherApiController struct {
@@ -24,7 +34,7 @@ func NewCallAnotherApiController(callAnotherApiUseCase usecase.CallAnotherApiUse
 func (caa *CallAnotherApiController) Call(c *gin.Context) {
 	message, err := caa.callAnotherApiUseCase.Call(c)
 	if err != nil {
-		c.JSON(500, err)
+		c.JSON(err.Code, err.Message)
 		return
 	}
 	c.JSON(200, message)

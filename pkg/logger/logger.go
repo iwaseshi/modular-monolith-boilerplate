@@ -66,6 +66,8 @@ func newLogger(severity zapcore.Level) (logger *zap.Logger) {
 	return logger.WithOptions(zap.AddCallerSkip(1))
 }
 
+// デフォルトのloggerを取得
+// Contextを使用できないところのみ使用する
 func Default() (defaultLogger *logger) {
 	// fallback
 	defer func() {
@@ -93,6 +95,7 @@ func RegisterInCtx(ctx context.Context, fields ...zap.Field) (newCtx context.Con
 	})
 }
 
+// contextからloggerを取得
 func WithCtx(ctx context.Context) *logger {
 	if ctx == nil {
 		return Default()

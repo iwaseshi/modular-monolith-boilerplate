@@ -6,7 +6,17 @@ import (
 	"io"
 	"modular-monolith-boilerplate/pkg/logger"
 	"net/http"
+	"os"
 )
+
+var InternalApiBaseURL string
+
+func init() {
+	path := os.Getenv("INTERNAL_API_BASE_URL")
+	if path == "" {
+		InternalApiBaseURL = "http://localhost:8080"
+	}
+}
 
 type RestClient struct {
 }
@@ -16,7 +26,7 @@ func NewRestClient() *RestClient {
 }
 
 func (rc *RestClient) CallGet(path string, responseType interface{}) (interface{}, error) {
-	resp, err := http.Get("http://" + path)
+	resp, err := http.Get(path)
 	// URLがnilだったり、Timeoutが発生した場合といったサーバーとの疎通前のエラーを検証する。
 	if err != nil {
 		logger.Default().Error("Error Request:", err)
