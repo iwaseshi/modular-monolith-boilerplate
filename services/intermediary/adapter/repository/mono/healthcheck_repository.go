@@ -2,10 +2,9 @@ package mono
 
 import (
 	"modular-monolith-boilerplate/pkg/di"
+	"modular-monolith-boilerplate/pkg/restapi"
 	"modular-monolith-boilerplate/services/healthcheck/usecase"
 	"modular-monolith-boilerplate/services/intermediary/domain/repository"
-
-	"github.com/gin-gonic/gin"
 )
 
 func init() {
@@ -22,7 +21,7 @@ func NewMonoHealthCheckRepository(healthCheckUseCase usecase.HealthCheckUseCase)
 	}
 }
 
-func (hcr *MonoHealthCheckRepository) Ping(c *gin.Context) (string, error) {
+func (hcr *MonoHealthCheckRepository) Ping(c *restapi.Context) (string, error) {
 	message, err := hcr.healthCheckUseCase.Ping(c)
 	if err != nil {
 		return "", err

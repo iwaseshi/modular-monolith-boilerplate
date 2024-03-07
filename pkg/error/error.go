@@ -1,6 +1,9 @@
 package error
 
-import "fmt"
+import (
+	"encoding/json"
+	"fmt"
+)
 
 type ApiError struct {
 	err     error
@@ -39,5 +42,10 @@ func NewSystemError(err error, messages ...fmt.Stringer) *ApiError {
 }
 
 func (e *ApiError) Error() string {
-	return fmt.Sprintf("Code: %d, Message: %s", e.Code, e.Message)
+	errorJSON, err := json.Marshal(e)
+	if err != nil {
+		// エラーのマーシャリングに失敗した場合、フォールバックとして簡易的なエラーメッセージを返す
+		return fmt.Sprintf("Error marshalling ApiError to JSON: %v", err)
+	}
+	return string(errorJSON)
 }
