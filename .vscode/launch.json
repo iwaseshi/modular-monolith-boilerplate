@@ -6,7 +6,7 @@
             "id": "debugTarget",
             "description": "Please select the launch api ",
             "options": [
-                "main.g",
+                "main.go",
             ]
         }
     ],
