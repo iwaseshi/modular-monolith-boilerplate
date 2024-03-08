@@ -3,6 +3,7 @@ package usecase
 import (
 	"modular-monolith-boilerplate/pkg/di"
 	"modular-monolith-boilerplate/pkg/error"
+	"modular-monolith-boilerplate/pkg/logger"
 	"modular-monolith-boilerplate/pkg/restapi"
 	"modular-monolith-boilerplate/services/intermediary/domain/repository"
 )
@@ -29,6 +30,7 @@ func NewIntermediaryInteractorr(healthCheckRepository repository.HealthCheckRepo
 func (ii *IntermediaryInteractor) Call(c *restapi.Context) (*string, *error.ApiError) {
 	message, err := ii.healthCheckRepository.Ping(c)
 	if err != nil {
+		logger.WithCtx(c.StandardContext()).Error("Failed to Call Health Check API", err)
 		return nil, error.NewSystemError(err)
 	}
 	return &message, nil

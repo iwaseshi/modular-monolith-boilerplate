@@ -3,6 +3,7 @@ package error
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 )
 
 type ApiError struct {
@@ -11,34 +12,43 @@ type ApiError struct {
 	Message string `json:"message"`
 }
 
-func NewBusinessError(err error, messages ...fmt.Stringer) *ApiError {
-	var msg string
-	if len(messages) > 0 && messages[0] != nil {
-		msg = messages[0].String()
-	} else {
-		msg = "Business error occurred"
+type defaultErrorMessage string
+
+func (msg defaultErrorMessage) String() string {
+	return string(msg)
+}
+
+func newApiError(err error, code int, messages ...fmt.Stringer) *ApiError {
+	var msgParts []string
+	for _, message := range messages {
+		if message != nil {
+			msgParts = append(msgParts, message.String())
+		}
+	}
+	msg := ""
+	if len(msgParts) > 0 {
+		msg = strings.Join(msgParts, " ")
 	}
 
 	return &ApiError{
 		err:     err,
-		Code:    400,
+		Code:    code,
 		Message: msg,
 	}
 }
 
-func NewSystemError(err error, messages ...fmt.Stringer) *ApiError {
-	var msg string
-	if len(messages) > 0 && messages[0] != nil {
-		msg = messages[0].String()
-	} else {
-		msg = "System error occurred"
+func NewBusinessError(err error, messages ...fmt.Stringer) *ApiError {
+	if len(messages) == 0 {
+		messages = append(messages, defaultErrorMessage("Business error occurred"))
 	}
+	return newApiError(err, 400, messages...)
+}
 
-	return &ApiError{
-		err:     err,
-		Code:    500,
-		Message: msg,
+func NewSystemError(err error, messages ...fmt.Stringer) *ApiError {
+	if len(messages) == 0 {
+		messages = append(messages, defaultErrorMessage("System error occurred"))
 	}
+	return newApiError(err, 500, messages...)
 }
 
 func (e *ApiError) Error() string {
@@ -48,4 +58,8 @@ func (e *ApiError) Error() string {
 		return fmt.Sprintf("Error marshalling ApiError to JSON: %v", err)
 	}
 	return string(errorJSON)
+}
+
+func (e *ApiError) Cause() error {
+	return e.err
 }
