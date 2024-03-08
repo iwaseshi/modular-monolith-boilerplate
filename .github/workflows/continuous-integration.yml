@@ -24,7 +24,11 @@ jobs:
       - name: Run test
         run: |
           go test . ./pkg/... ./services/intermediary/... ./services/healthcheck/... ./services/intersection...
-      - name: Run lint
+      - name: Run hadolint
+        uses: hadolint/hadolint-action@master
+        with:
+          recursive: true
+      - name: Run golangci lint
         uses: golangci/golangci-lint-action@v4
         with:
           version: v1.54
