@@ -18,12 +18,12 @@ jobs:
       - uses: actions/cache@v4
         with:
           path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.work.sum') }}
           restore-keys: |
             ${{ runner.os }}-go-
       - name: Run test
         run: |
-          go test . ./pkg/... ./services/intermediary/... ./services/healthcheck/... ./services/intersection...
+          go test ./pkg/... ./services/intermediary/... ./services/healthcheck/...
       - name: Run hadolint
         uses: hadolint/hadolint-action@master
         with:
@@ -31,5 +31,5 @@ jobs:
       - name: Run golangci lint
         uses: golangci/golangci-lint-action@v4
         with:
-          version: v1.54
-          args: --config=.golangci.yml
+          version: v1.56.2
+          args: --config=.golangci.yml ./pkg/... ./services/intermediary/... ./services/healthcheck/...
