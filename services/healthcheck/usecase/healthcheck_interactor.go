@@ -4,6 +4,7 @@ import (
 	"modular-monolith-boilerplate/services/healthcheck/domain"
 
 	"modular-monolith-boilerplate/pkg/di"
+	"modular-monolith-boilerplate/pkg/errors"
 	"modular-monolith-boilerplate/pkg/restapi"
 )
 
@@ -12,8 +13,8 @@ func init() {
 }
 
 type HealthCheckUseCase interface {
-	Ping(c *restapi.Context) (*string, error)
-	Readiness(c *restapi.Context, req *domain.ReadyRequest) (*domain.ReadyResponse, error)
+	Ping(c *restapi.Context) (*string, *errors.ApiError)
+	Readiness(c *restapi.Context, req *domain.ReadyRequest) (*domain.ReadyResponse, *errors.ApiError)
 }
 
 type HealthCheckInteractor struct {
@@ -24,12 +25,12 @@ func NewHealthCheckInteractor() HealthCheckUseCase {
 
 }
 
-func (hci *HealthCheckInteractor) Ping(c *restapi.Context) (*string, error) {
+func (hci *HealthCheckInteractor) Ping(c *restapi.Context) (*string, *errors.ApiError) {
 	message := "pong"
 	return &message, nil
 }
 
-func (hci *HealthCheckInteractor) Readiness(c *restapi.Context, req *domain.ReadyRequest) (*domain.ReadyResponse, error) {
+func (hci *HealthCheckInteractor) Readiness(c *restapi.Context, req *domain.ReadyRequest) (*domain.ReadyResponse, *errors.ApiError) {
 	var res = domain.ReadyResponse{
 		Message: "yeah!!",
 	}
