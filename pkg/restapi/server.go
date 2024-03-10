@@ -2,7 +2,9 @@ package restapi
 
 import (
 	"context"
+	"modular-monolith-boilerplate/pkg/errors"
 	"modular-monolith-boilerplate/pkg/logger"
+	"os"
 
 	"github.com/gin-gonic/gin"
 )
@@ -27,12 +29,12 @@ func NewGroup(groupPath string) *routerGroup {
 	}
 }
 
-func (rg *routerGroup) RegisterGET(getPath string, fun gin.HandlerFunc) {
-	rg.group.GET(getPath, fun)
+func (rg *routerGroup) RegisterGET(getPath string, fun HandlerFunc) {
+	rg.group.GET(getPath, convertHandler(fun))
 }
 
-func (rg *routerGroup) RegisterPOST(postPath string, fun gin.HandlerFunc) {
-	rg.group.POST(postPath, fun)
+func (rg *routerGroup) RegisterPOST(postPath string, fun HandlerFunc) {
+	rg.group.POST(postPath, convertHandler(fun))
 }
 
 func Run(port string) error {
@@ -54,12 +56,16 @@ func NewContext(ginCtx *gin.Context) *Context {
 	}
 }
 
-func (c *Context) GinContext() *gin.Context {
-	return c.ginCtx
+func (c *Context) Context() context.Context {
+	return c.stdCtx
 }
 
-func (c *Context) StandardContext() context.Context {
-	return c.stdCtx
+func (c *Context) BindJson(req any) (error *errors.ApiError) {
+	if err := c.ginCtx.BindJSON(req); err != nil {
+		logger.WithCtx(c.stdCtx).Error("Error binding request: %s", err.Error())
+		return errors.NewBusinessError(err)
+	}
+	return nil
 }
 
 func (c *Context) ApiResponse(statusCode int, body interface{}) {
@@ -68,10 +74,16 @@ func (c *Context) ApiResponse(statusCode int, body interface{}) {
 
 type HandlerFunc func(*Context)
 
-func Handler(handler HandlerFunc) gin.HandlerFunc {
+func convertHandler(handler HandlerFunc) gin.HandlerFunc {
 	return func(ginCtx *gin.Context) {
 		customCtx := NewContext(ginCtx)
-		logger.RegisterInCtx(customCtx.StandardContext())
+		logger.RegisterInCtx(customCtx.Context())
 		handler(customCtx)
 	}
+}
+
+func IsRunningOnCloud() bool {
+	// Cloud Runは`K_SERVICE`環境変数を提供している
+	_, exists := os.LookupEnv("K_SERVICE")
+	return exists
 }

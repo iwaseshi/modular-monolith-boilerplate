@@ -2,6 +2,7 @@ package mono
 
 import (
 	"modular-monolith-boilerplate/pkg/di"
+	"modular-monolith-boilerplate/pkg/errors"
 	"modular-monolith-boilerplate/pkg/restapi"
 	"modular-monolith-boilerplate/services/healthcheck/usecase"
 	"modular-monolith-boilerplate/services/intermediary/domain/repository"
@@ -21,10 +22,11 @@ func NewMonoHealthCheckRepository(healthCheckUseCase usecase.HealthCheckUseCase)
 	}
 }
 
-func (hcr *MonoHealthCheckRepository) Ping(c *restapi.Context) (string, error) {
+func (hcr *MonoHealthCheckRepository) Ping(c *restapi.Context) (*string, *errors.ApiError) {
 	message, err := hcr.healthCheckUseCase.Ping(c)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	return *message + " from function", nil
+	messageStr := *message + " from function"
+	return &messageStr, nil
 }

@@ -1,7 +1,6 @@
-package error
+package errors
 
 import (
-	"encoding/json"
 	"fmt"
 	"strings"
 )
@@ -49,15 +48,6 @@ func NewSystemError(err error, messages ...fmt.Stringer) *ApiError {
 		messages = append(messages, defaultErrorMessage("System error occurred"))
 	}
 	return newApiError(err, 500, messages...)
-}
-
-func (e *ApiError) Error() string {
-	errorJSON, err := json.Marshal(e)
-	if err != nil {
-		// エラーのマーシャリングに失敗した場合、フォールバックとして簡易的なエラーメッセージを返す
-		return fmt.Sprintf("Error marshalling ApiError to JSON: %v", err)
-	}
-	return string(errorJSON)
 }
 
 func (e *ApiError) Cause() error {

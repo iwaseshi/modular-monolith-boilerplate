@@ -13,8 +13,8 @@ func init() {
 func RegisterRouting() {
 	_ = di.GetContainer().Invoke(
 		func(ic *IntermediaryController) {
-			group := restapi.NewGroup("/call-another-api")
-			group.RegisterGET("/call", restapi.Handler(ic.Call))
+			group := restapi.NewGroup("/intermediary")
+			group.RegisterGET("/call", ic.Call)
 		},
 	)
 }
@@ -32,7 +32,7 @@ func NewIntermediaryController(intermediaryUseCase usecase.IntermediaryUseCase) 
 func (ic *IntermediaryController) Call(c *restapi.Context) {
 	message, err := ic.intermediaryUseCase.Call(c)
 	if err != nil {
-		c.ApiResponse(err.Code, err.Error())
+		c.ApiResponse(err.Code, err)
 		return
 	}
 	c.ApiResponse(200, message)
