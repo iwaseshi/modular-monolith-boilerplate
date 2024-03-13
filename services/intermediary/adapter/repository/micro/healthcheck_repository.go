@@ -2,21 +2,16 @@ package micro
 
 import (
 	"fmt"
+	"modular-monolith-boilerplate/pkg/config"
 	"modular-monolith-boilerplate/pkg/di"
 	"modular-monolith-boilerplate/pkg/errors"
 	"modular-monolith-boilerplate/pkg/restapi"
 	"modular-monolith-boilerplate/services/intermediary/domain/repository"
-)
-
-var (
-	healthCheckBasePath = "http://localhost:8080"
+	"os"
 )
 
 func init() {
 	di.RegisterBean(NewMicroHealthCheckRepository)
-	if restapi.IsRunningOnCloud() {
-		healthCheckBasePath = "https://healthcheck-rftndbrsdq-an.a.run.app"
-	}
 }
 
 type MicroHealthCheckRepository struct {
@@ -31,6 +26,11 @@ func NewMicroHealthCheckRepository() repository.HealthCheckRepository {
 
 func (hcr *MicroHealthCheckRepository) Ping(c *restapi.Context) (*string, *errors.ApiError) {
 	message := ""
+	mode := os.Getenv("MODE")
+	if mode == "" {
+		mode = "mono"
+	}
+	healthCheckBasePath := config.Get("healthCheckBasePath." + mode)
 	resp, err := hcr.restClient.CallGet(healthCheckBasePath+"/health-check/ping", message)
 	if err != nil {
 		return nil, err
