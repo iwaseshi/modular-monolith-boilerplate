@@ -2,7 +2,6 @@ FROM golang:1.22.1 AS builder
 WORKDIR /workspace
 COPY go.mod go.sum ./
 RUN go mod download
-RUN go mod tidy
 COPY . .
 RUN go build -tags=micro -o /workspace/intermediary ./services/intermediary/main.go
 
