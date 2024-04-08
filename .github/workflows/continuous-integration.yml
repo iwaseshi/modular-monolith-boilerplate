@@ -31,8 +31,7 @@ jobs:
           version: v1.56.2
           args: --config=.golangci.yml ./pkg/... ./services/intermediary/... ./services/healthcheck/...
       - name: Run hadolint
-        run: |
-          hadolint ./Dockerfile ./services/intermediary/Dockerfile ./services/healthcheck/Dockerfile
+        uses: brpaz/hadolint-action@master
       - name: Run test
         run: |
           go test ./pkg/... ./services/intermediary/... ./services/healthcheck/...
