@@ -21,6 +21,18 @@ jobs:
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.work.sum') }}
           restore-keys: |
             ${{ runner.os }}-go-
+      - name: Run go mod tidy
+        run: |
+          go mod tidy
+          git diff --exit-code -- go.mod go.sum
+      - name: Run golangci lint
+        uses: golangci/golangci-lint-action@v4
+        with:
+          version: v1.56.2
+          args: --config=.golangci.yml ./pkg/... ./services/intermediary/... ./services/healthcheck/...
+      - name: Run hadolint
+        run: |
+          hadolint ./Dockerfile ./services/intermediary/Dockerfile ./services/healthcheck/Dockerfile
       - name: Run test
         run: |
           go test ./pkg/... ./services/intermediary/... ./services/healthcheck/...
@@ -28,8 +40,3 @@ jobs:
         uses: hadolint/hadolint-action@master
         with:
           recursive: true
-      - name: Run golangci lint
-        uses: golangci/golangci-lint-action@v4
-        with:
-          version: v1.56.2
-          args: --config=.golangci.yml ./pkg/... ./services/intermediary/... ./services/healthcheck/...
