@@ -10,6 +10,10 @@ import (
 	"os"
 )
 
+var (
+	mode = os.Getenv("MODE")
+)
+
 func init() {
 	di.RegisterBean(NewMicroHealthCheckRepository)
 }
@@ -26,7 +30,6 @@ func NewMicroHealthCheckRepository() repository.HealthCheckRepository {
 
 func (hcr *MicroHealthCheckRepository) Ping(c *restapi.Context) (*string, *errors.ApiError) {
 	message := ""
-	mode := os.Getenv("MODE")
 	if mode == "" {
 		mode = "mono"
 	}
