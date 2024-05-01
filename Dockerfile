@@ -6,7 +6,7 @@ RUN go mod tidy && \
     go build -o monoapp
 
 # glibcのVerに合わせたイメージを使用する https://repology.org/project/glibc/versions
-FROM ubuntu:22.04 
+FROM ubuntu:24.04 
 ENV MODE="mono" 
 WORKDIR /app
 COPY --from=builder /workspace/monoapp /app/monoapp

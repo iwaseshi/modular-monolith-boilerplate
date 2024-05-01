@@ -6,7 +6,7 @@ COPY . .
 RUN go build -o healthcheck ./services/healthcheck/main.go
 
 # glibcのVerに合わせたイメージを使用する https://repology.org/project/glibc/versions
-FROM ubuntu:22.04  
+FROM ubuntu:24.04  
 COPY --from=builder /workspace/healthcheck /app/healthcheck
 COPY config.yml /app/config.yml 
 CMD ["/app/healthcheck"]
