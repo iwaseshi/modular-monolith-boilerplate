@@ -1,4 +1,4 @@
-FROM golang:1.22.1 AS builder
+FROM golang:1.22.2 AS builder
 WORKDIR /workspace
 COPY . .
 RUN go mod tidy && \
@@ -6,7 +6,7 @@ RUN go mod tidy && \
     go build -o monoapp
 
 # glibcのVerに合わせたイメージを使用する https://repology.org/project/glibc/versions
-FROM ubuntu:22.04 
+FROM ubuntu:24.04 
 ENV MODE="mono" 
 WORKDIR /app
 COPY --from=builder /workspace/monoapp /app/monoapp

@@ -1,4 +1,4 @@
-FROM golang:1.22.1 AS builder
+FROM golang:1.22.2 AS builder
 WORKDIR /workspace
 COPY go.mod go.sum ./
 RUN go mod download
@@ -6,7 +6,7 @@ COPY . .
 RUN go build -tags=micro -o /workspace/intermediary ./services/intermediary/main.go
 
 # glibcのVerに合わせたイメージを使用する https://repology.org/project/glibc/versions
-FROM ubuntu:22.04  
+FROM ubuntu:24.04  
 ENV MODE="micro"
 # 最新のセキュリティパッチを受け取るためにバージョンの明示的な指定は行わない。
 # hadolint ignore=DL3008
