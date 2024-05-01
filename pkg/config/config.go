@@ -12,8 +12,12 @@ var (
 	isInitialized = false
 )
 
-func LoadServiceConfig(serviceName string) {
-	viper.AddConfigPath(serviceName)
+func init() {
+	path := os.Getenv("CONFIG_PATH")
+	if path == "" {
+		path = "."
+	}
+	viper.AddConfigPath(path)
 	viper.SetConfigName("config")
 	viper.SetConfigType("yml")
 
@@ -28,12 +32,9 @@ func Get(key string) string {
 	if !isInitialized {
 		logger.Default().Warning("Config is not initialized")
 	}
-	str := ""
 	env := os.Getenv("ENVIRONMENT")
 	if env != "" {
-		logger.Default().Info("ENVIRONMENT: " + env)
 		return viper.GetString(env + "." + key)
 	}
-	str = viper.GetString("default" + "." + key)
-	return str
+	return viper.GetString("default" + "." + key)
 }

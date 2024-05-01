@@ -1,7 +1,6 @@
 package main
 
 import (
-	"modular-monolith-boilerplate/pkg/config"
 	"modular-monolith-boilerplate/pkg/restapi"
 
 	intermediary "modular-monolith-boilerplate/services/intermediary/adapter/controller"
@@ -13,7 +12,6 @@ import (
 )
 
 func main() {
-	config.LoadServiceConfig(".")
 	healthcheck.RegisterRouting()
 	intermediary.RegisterRouting()
 	_ = restapi.Run("8080", "monolith")
