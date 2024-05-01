@@ -2,11 +2,18 @@ package restapi
 
 import (
 	"context"
+	"log"
 	"modular-monolith-boilerplate/pkg/errors"
 	"modular-monolith-boilerplate/pkg/logger"
 	"os"
 
 	"github.com/gin-gonic/gin"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/exporters/stdout/stdouttrace"
+	"go.opentelemetry.io/otel/sdk/resource"
+	"go.opentelemetry.io/otel/sdk/trace"
+	semconv "go.opentelemetry.io/otel/semconv/v1.4.0"
 )
 
 const (
@@ -16,6 +23,13 @@ const (
 var (
 	router = gin.Default()
 )
+
+func init() {
+	if IsRunningOnCloud() {
+		router.ContextWithFallback = true
+	}
+
+}
 
 type routerGroup struct {
 	path  string
@@ -37,7 +51,26 @@ func (rg *routerGroup) RegisterPOST(postPath string, fun HandlerFunc) {
 	rg.group.POST(postPath, convertHandler(fun))
 }
 
-func Run(port string) error {
+func Run(port string, serviceName string) error {
+	if port == "" {
+		port = DefaultPort
+	}
+	if !IsRunningOnCloud() {
+		return router.Run(":" + port)
+	}
+	exporter, err := stdouttrace.New(stdouttrace.WithPrettyPrint())
+	if err != nil {
+		log.Fatalf("stdouttrace.New failed: %v", err)
+	}
+	tp := trace.NewTracerProvider(
+		trace.WithBatcher(exporter),
+		trace.WithResource(resource.NewWithAttributes(
+			semconv.SchemaURL,
+			semconv.ServiceNameKey.String(serviceName),
+		)),
+	)
+	otel.SetTracerProvider(tp)
+	router.Use(otelgin.Middleware(serviceName))
 	if port == "" {
 		port = DefaultPort
 	}
