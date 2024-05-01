@@ -8,5 +8,5 @@ import (
 //nolint:unused
 func main() {
 	controller.RegisterRouting()
-	_ = restapi.Run(restapi.DefaultPort)
+	_ = restapi.Run(restapi.DefaultPort, "healthcheck")
 }
