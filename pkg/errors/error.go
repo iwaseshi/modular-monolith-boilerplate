@@ -50,6 +50,6 @@ func NewSystemError(err error, messages ...fmt.Stringer) *ApiError {
 	return newApiError(err, 500, messages...)
 }
 
-func (e *ApiError) Cause() error {
+func (e *ApiError) Unwrap() error {
 	return e.err
 }
