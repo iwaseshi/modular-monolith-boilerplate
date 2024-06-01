@@ -30,8 +30,8 @@ func NewIntermediaryInteractorr(healthCheckRepository repository.HealthCheckRepo
 func (ii *IntermediaryInteractor) Call(c *restapi.Context) (*string, *errors.ApiError) {
 	message, err := ii.healthCheckRepository.Ping(c)
 	if err != nil {
-		logger.WithCtx(c.Context()).Error("Failed to Call Health Check API", err.Cause())
-		return nil, errors.NewSystemError(err.Cause())
+		logger.WithCtx(c.Context()).Error("Failed to Call Health Check API", err.Unwrap())
+		return nil, errors.NewSystemError(err.Unwrap())
 	}
 	return message, nil
 }
