@@ -3,8 +3,9 @@ package gcp
 import (
 	"context"
 	"io"
+	"mime/multipart"
 	"modular-monolith-boilerplate/pkg/adapter"
-	"os"
+	"modular-monolith-boilerplate/pkg/restapi"
 	"sync"
 
 	"cloud.google.com/go/storage"
@@ -12,31 +13,41 @@ import (
 )
 
 type CloudStorage struct {
-	Bucket string
+	Bucket *storage.BucketHandle
 	client *storage.Client
 	ctx    context.Context
 	files  []file
 }
 
 type file struct {
-	file        *os.File
+	file        multipart.File
 	filePath    string
 	contentType string
 }
 
 func NewCloudStorage(ctx context.Context, bucket string) (adapter.Storage, error) {
-	client, err := storage.NewClient(ctx, option.WithCredentialsFile("storage_key.json"))
+	var client *storage.Client
+	var err error
+	if restapi.IsRunningOnCloud() {
+		client, err = storage.NewClient(ctx)
+	} else {
+		client, err = storage.NewClient(ctx, option.WithCredentialsFile("storage_key.json"))
+	}
+	if err != nil {
+		return nil, err
+	}
+	_, err = client.Bucket(bucket).Attrs(ctx)
 	if err != nil {
 		return nil, err
 	}
 	return &CloudStorage{
-		Bucket: bucket,
+		Bucket: client.Bucket(bucket),
 		client: client,
 		ctx:    ctx,
 	}, nil
 }
 
-func (cs *CloudStorage) AddFile(addTarget *os.File, filePath string, contentType string) {
+func (cs *CloudStorage) AddFile(addTarget multipart.File, filePath string, contentType string) {
 	cs.files = append(cs.files, file{
 		file:        addTarget,
 		filePath:    filePath,
@@ -76,7 +87,7 @@ func (cs *CloudStorage) WriteFiles() error {
 }
 
 func (cs CloudStorage) writeFile(f file) error {
-	obj := cs.client.Bucket(cs.Bucket).Object(f.filePath)
+	obj := cs.Bucket.Object(f.filePath)
 	wc := obj.NewWriter(cs.ctx)
 	defer wc.Close()
 	wc.ContentType = f.contentType

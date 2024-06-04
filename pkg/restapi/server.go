@@ -2,6 +2,7 @@ package restapi
 
 import (
 	"context"
+	"mime/multipart"
 	"modular-monolith-boilerplate/pkg/errors"
 	"modular-monolith-boilerplate/pkg/logger"
 	"os"
@@ -66,6 +67,10 @@ func (c *Context) BindJson(req any) (error *errors.ApiError) {
 		return errors.NewBusinessError(err)
 	}
 	return nil
+}
+
+func (c *Context) FormFile(key string) (multipart.File, *multipart.FileHeader, error) {
+	return c.ginCtx.Request.FormFile(key)
 }
 
 func (c *Context) ApiResponse(statusCode int, body interface{}) {

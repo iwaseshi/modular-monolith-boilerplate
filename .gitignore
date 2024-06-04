@@ -1,3 +1,6 @@
 .DS_Store
 modular-monolith-boilerplate
 bin/
+cdktf.out
+storage_key.json
+
