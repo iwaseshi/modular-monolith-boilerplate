@@ -3,7 +3,7 @@ package main
 import (
 	infrastructure "cdk.tf/go/stack"
 	"github.com/aws/jsii-runtime-go"
-	"github.com/cdktf/cdktf-provider-google-go/google/v6/provider"
+	"github.com/cdktf/cdktf-provider-google-go/google/v13/provider"
 	"github.com/hashicorp/terraform-cdk-go/cdktf"
 )
 

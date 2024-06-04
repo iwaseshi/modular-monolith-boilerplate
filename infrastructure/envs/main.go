@@ -19,6 +19,6 @@ func NewMyStack(scope constructs.Construct, id string) cdktf.TerraformStack {
 
 func main() {
 	app := cdktf.NewApp(nil)
-	NewMyStack(app, "modular-monolith-boilerplate")
+	NewMyStack(app, "modular-monolith-sample")
 	app.Synth()
 }
