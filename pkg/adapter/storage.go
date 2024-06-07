@@ -1,9 +1,9 @@
 package adapter
 
-import "os"
+import "mime/multipart"
 
 type Storage interface {
-	AddFile(file *os.File, filename string, contentType string)
+	AddFile(file multipart.File, filename string, contentType string)
 	WriteFiles() error
 	Close() error
 }

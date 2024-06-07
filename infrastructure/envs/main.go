@@ -1,7 +1,8 @@
 package main
 
 import (
-	"cdk.tf/go/stack/modules"
+	infrastructure "cdk.tf/go/stack"
+	"cdk.tf/go/stack/services/fileservice"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/hashicorp/terraform-cdk-go/cdktf"
 )
@@ -12,13 +13,14 @@ func NewMyStack(scope constructs.Construct, id string) cdktf.TerraformStack {
 	SetupGoogleProvider(stack)
 	SetupGcsBackend(stack)
 
-	modules.NewStorageBucket(stack)
+	fileservice.DeployResources(stack)
 
 	return stack
 }
 
 func main() {
 	app := cdktf.NewApp(nil)
-	NewMyStack(app, "modular-monolith-boilerplate")
+	// envsは各環境に置き換えること
+	NewMyStack(app, infrastructure.ProjectName+"envs")
 	app.Synth()
 }

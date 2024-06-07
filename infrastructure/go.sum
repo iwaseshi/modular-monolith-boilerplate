@@ -4,8 +4,8 @@ github.com/aws/constructs-go/constructs/v10 v10.3.0 h1:LsjBIMiaDX/vqrXWhzTquBJ9p
 github.com/aws/constructs-go/constructs/v10 v10.3.0/go.mod h1:GgzwIwoRJ2UYsr3SU+JhAl+gq5j39bEMYf8ev3J+s9s=
 github.com/aws/jsii-runtime-go v1.98.0 h1:ulW8WgW9xchCkGc8SBKSQwpm+4/MwoFkYuCsOD8NnMU=
 github.com/aws/jsii-runtime-go v1.98.0/go.mod h1:30XYoqvHizeedL8KNra3DBZ9w+NtJDQpbU4o1bN9lVc=
-github.com/cdktf/cdktf-provider-google-go/google/v6 v6.0.0 h1:bbpV6EdJQ8kTSlFr+5pDJPTXqAyOB0H49/rRIEw2ny0=
-github.com/cdktf/cdktf-provider-google-go/google/v6 v6.0.0/go.mod h1:j0wLn+62d5c4xbnynafjW/dpcwh6v9hMX1lddCcGvlU=
+github.com/cdktf/cdktf-provider-google-go/google/v13 v13.16.0 h1:uLnPeOT3Ic8vaBGZQaqUvd+SK/9W/hwvWQcr6xYcN5g=
+github.com/cdktf/cdktf-provider-google-go/google/v13 v13.16.0/go.mod h1:pvo/IIw8y3dfC9QxX1b9uoiKl7pv/6jfVyzt+MpvxkE=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/fatih/color v1.16.0 h1:zmkK9Ngbjj+K0yRhTVONQh1p/HknKYSlNT+vZCzyokM=

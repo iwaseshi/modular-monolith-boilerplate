@@ -20,5 +20,5 @@ require (
 
 require (
 	github.com/aws/jsii-runtime-go v1.98.0
-	github.com/cdktf/cdktf-provider-google-go/google/v6 v6.0.0
+	github.com/cdktf/cdktf-provider-google-go/google/v13 v13.16.0
 )

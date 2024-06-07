@@ -1,22 +1,19 @@
 package modules
 
 import (
+	infrastructure "cdk.tf/go/stack"
 	"github.com/aws/jsii-runtime-go"
-	"github.com/cdktf/cdktf-provider-google-go/google/v6/serviceaccount"
-	"github.com/cdktf/cdktf-provider-google-go/google/v6/storagebucket"
-	"github.com/cdktf/cdktf-provider-google-go/google/v6/storagebucketiampolicy"
+	"github.com/cdktf/cdktf-provider-google-go/google/v13/serviceaccount"
+	"github.com/cdktf/cdktf-provider-google-go/google/v13/storagebucket"
+	"github.com/cdktf/cdktf-provider-google-go/google/v13/storagebucketiampolicy"
 	"github.com/hashicorp/terraform-cdk-go/cdktf"
 )
 
-func NewStorageBucket(stack cdktf.TerraformStack) {
+func NewStorageBucket(stack cdktf.TerraformStack, name string, account serviceaccount.ServiceAccount) {
 	bucket := storagebucket.NewStorageBucket(stack, jsii.String("gcs_bucket"), &storagebucket.StorageBucketConfig{
-		Location: jsii.String("asia-northeast1"),
-		Name:     jsii.String("modular-monolith-boilerplate"),
-	})
-
-	account := serviceaccount.NewServiceAccount(stack, jsii.String("app_sa"), &serviceaccount.ServiceAccountConfig{
-		AccountId:   jsii.String("app-account"),
-		DisplayName: jsii.String("app account"),
+		Location:     jsii.String(infrastructure.Region),
+		Name:         jsii.String(name + "-app-bucket"),
+		ForceDestroy: jsii.Bool(true),
 	})
 
 	storagebucketiampolicy.NewStorageBucketIamPolicy(stack, jsii.String("sa_iam"), &storagebucketiampolicy.StorageBucketIamPolicyConfig{
@@ -24,7 +21,7 @@ func NewStorageBucket(stack cdktf.TerraformStack) {
 		PolicyData: jsii.String(`{
 			"bindings": [
 				{
-					"role": "roles/storage.objectAdmin",
+					"role": "roles/storage.admin",
 					"members": [
 						"serviceAccount:` + *account.Email() + `"
 					]

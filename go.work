@@ -3,6 +3,8 @@ go 1.22.2
 use (
 	./
 	./pkg
+	./services/fileservice
 	./services/intermediary
 	./services/healthcheck
+	./infrastructure
 )

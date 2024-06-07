@@ -1,6 +1,6 @@
 package infrastructure
 
 const (
-	ProjectName = "modular-monolith-boilerplate"
+	ProjectName = "modular-monolith-sample"
 	Region      = "asia-northeast1"
 )
