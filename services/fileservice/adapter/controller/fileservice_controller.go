@@ -49,5 +49,5 @@ func (fsc *FileServiceController) Upload(c *restapi.Context) {
 		c.ApiResponse(http.StatusInternalServerError, err.Error())
 		return
 	}
-	c.ApiResponse(200, "File uploaded successfully")
+	c.ApiResponse(http.StatusOK, "File uploaded successfully")
 }
