@@ -9,10 +9,10 @@ import (
 	"github.com/hashicorp/terraform-cdk-go/cdktf"
 )
 
-func NewStorageBucket(stack cdktf.TerraformStack, account serviceaccount.ServiceAccount) {
+func NewStorageBucket(stack cdktf.TerraformStack, name string, account serviceaccount.ServiceAccount) {
 	bucket := storagebucket.NewStorageBucket(stack, jsii.String("gcs_bucket"), &storagebucket.StorageBucketConfig{
 		Location:     jsii.String(infrastructure.Region),
-		Name:         jsii.String(infrastructure.ProjectName + "-app-bucket"),
+		Name:         jsii.String(name + "-app-bucket"),
 		ForceDestroy: jsii.Bool(true),
 	})
 

@@ -17,7 +17,7 @@ func NewCloudRun(stack cdktf.TerraformStack, name string, account serviceaccount
 			Spec: &cloudrunservice.CloudRunServiceTemplateSpec{
 				Containers: []*cloudrunservice.CloudRunServiceTemplateSpecContainers{
 					{
-						Image: jsii.String("gcr.io/modular-monolith-sample/fileservice/app"),
+						Image: jsii.String("gcr.io/modular-monolith-sample/" + name + "/app"),
 					},
 				},
 				ServiceAccountName: account.Email(),

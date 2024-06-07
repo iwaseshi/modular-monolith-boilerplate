@@ -18,7 +18,7 @@ func DeployResources(stack cdktf.TerraformStack) cdktf.TerraformStack {
 		DisplayName: jsii.String(ServiceName + " account"),
 	})
 
-	modules.NewStorageBucket(stack, account)
+	modules.NewStorageBucket(stack, ServiceName, account)
 	modules.NewCloudRun(stack, ServiceName, account)
 
 	return stack
