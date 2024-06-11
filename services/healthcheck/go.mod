@@ -1,6 +1,6 @@
 module modular-monolith-boilerplate/services/healthcheck
 
-go 1.22.2
+go 1.22.4
 
 require github.com/stretchr/testify v1.8.4
 
