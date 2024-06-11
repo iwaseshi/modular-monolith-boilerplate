@@ -1,13 +1,12 @@
 module modular-monolith-boilerplate/pkg
 
-go 1.22.2
+go 1.22.4
 
 require (
 	cloud.google.com/go/storage v1.40.0
 	github.com/gin-gonic/gin v1.9.1
 	go.uber.org/dig v1.17.1
 	go.uber.org/zap v1.27.0
-	google.golang.org/api v0.177.0
 )
 
 require (
@@ -46,6 +45,7 @@ require (
 	golang.org/x/oauth2 v0.19.0 // indirect
 	golang.org/x/sync v0.7.0 // indirect
 	golang.org/x/time v0.5.0 // indirect
+	google.golang.org/api v0.177.0 // indirect
 	google.golang.org/genproto v0.0.0-20240227224415-6ceb2ff114de // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20240314234333-6e1732d8331c // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240429193739-8cf5692501f6 // indirect
