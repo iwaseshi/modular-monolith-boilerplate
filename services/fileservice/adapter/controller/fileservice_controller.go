@@ -36,7 +36,7 @@ func (fsc *FileServiceController) Upload(c *restapi.Context) {
 	}
 	defer file.Close()
 
-	storage, err := gcp.NewCloudStorage(c.Context(), "modular-monolith-sample-app-bucket")
+	storage, err := gcp.NewCloudStorage(c.Context(), "fileservice-app-bucket")
 	if err != nil {
 		c.ApiResponse(http.StatusInternalServerError, err.Error())
 		return
