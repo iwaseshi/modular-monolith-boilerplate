@@ -5,11 +5,9 @@ import (
 	"io"
 	"mime/multipart"
 	"modular-monolith-boilerplate/pkg/adapter"
-	"modular-monolith-boilerplate/pkg/restapi"
 	"sync"
 
 	"cloud.google.com/go/storage"
-	"google.golang.org/api/option"
 )
 
 type CloudStorage struct {
@@ -26,13 +24,7 @@ type file struct {
 }
 
 func NewCloudStorage(ctx context.Context, bucket string) (adapter.Storage, error) {
-	var client *storage.Client
-	var err error
-	if restapi.IsRunningOnCloud() {
-		client, err = storage.NewClient(ctx)
-	} else {
-		client, err = storage.NewClient(ctx, option.WithCredentialsFile("storage_key.json"))
-	}
+	client, err := storage.NewClient(ctx)
 	if err != nil {
 		return nil, err
 	}

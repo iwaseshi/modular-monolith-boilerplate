@@ -1,6 +1,9 @@
 package modules
 
 import (
+	"encoding/json"
+	"log"
+
 	infrastructure "cdk.tf/go/stack"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdktf/cdktf-provider-google-go/google/v13/serviceaccount"
@@ -16,24 +19,44 @@ func NewStorageBucket(stack cdktf.TerraformStack, name string, account serviceac
 		ForceDestroy: jsii.Bool(true),
 	})
 
+	policyData := NewPolicyData([]Binding{
+		{
+			Role:    "roles/storage.admin",
+			Members: []string{"serviceAccount:" + *account.Email()},
+		},
+		{
+			Role:    "roles/storage.legacyObjectReader",
+			Members: []string{"allUsers"},
+		},
+	})
+	policyDataJSON, err := policyData.ToJSON()
+	if err != nil {
+		log.Fatalf("Error marshalling policy data: %v", err)
+	}
 	storagebucketiampolicy.NewStorageBucketIamPolicy(stack, jsii.String("sa_iam"), &storagebucketiampolicy.StorageBucketIamPolicyConfig{
-		Bucket: bucket.Name(),
-		PolicyData: jsii.String(`{
-			"bindings": [
-				{
-					"role": "roles/storage.admin",
-					"members": [
-						"serviceAccount:` + *account.Email() + `"
-					]
-				},
-				{
-					"role":"roles/storage.legacyObjectReader",
-					"members": [
-						"allUsers"
-					]
-				}
-			]
-		}`),
+		Bucket:     bucket.Name(),
+		PolicyData: jsii.String(policyDataJSON),
 	})
 
+}
+
+type Binding struct {
+	Role    string   `json:"role"`
+	Members []string `json:"members"`
+}
+
+type PolicyData struct {
+	Bindings []Binding `json:"bindings"`
+}
+
+func NewPolicyData(bindings []Binding) *PolicyData {
+	return &PolicyData{Bindings: bindings}
+}
+
+func (p *PolicyData) ToJSON() (string, error) {
+	data, err := json.Marshal(p)
+	if err != nil {
+		return "", err
+	}
+	return string(data), nil
 }
