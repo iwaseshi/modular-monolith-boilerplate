@@ -5,16 +5,24 @@ import (
 	"io"
 	"mime/multipart"
 	"modular-monolith-boilerplate/pkg/adapter"
+	"modular-monolith-boilerplate/pkg/di"
 	"sync"
 
 	"cloud.google.com/go/storage"
 )
 
+func init() {
+	di.RegisterBean(NewCloudStorage)
+}
+
 type CloudStorage struct {
-	Bucket *storage.BucketHandle
-	client *storage.Client
-	ctx    context.Context
-	files  []file
+}
+
+type Bucket struct {
+	handler *storage.BucketHandle
+	client  *storage.Client
+	ctx     context.Context
+	files   []file
 }
 
 type file struct {
@@ -23,7 +31,11 @@ type file struct {
 	contentType string
 }
 
-func NewCloudStorage(ctx context.Context, bucket string) (adapter.Storage, error) {
+func NewCloudStorage() adapter.Storage {
+	return &CloudStorage{}
+}
+
+func (cs *CloudStorage) NewBucketConnection(ctx context.Context, bucket string) (adapter.Bucket, error) {
 	client, err := storage.NewClient(ctx)
 	if err != nil {
 		return nil, err
@@ -32,37 +44,37 @@ func NewCloudStorage(ctx context.Context, bucket string) (adapter.Storage, error
 	if err != nil {
 		return nil, err
 	}
-	return &CloudStorage{
-		Bucket: client.Bucket(bucket),
-		client: client,
-		ctx:    ctx,
+	return &Bucket{
+		handler: client.Bucket(bucket),
+		client:  client,
+		ctx:     ctx,
 	}, nil
 }
 
-func (cs *CloudStorage) AddFile(addTarget multipart.File, filePath string, contentType string) {
-	cs.files = append(cs.files, file{
+func (b *Bucket) AddFile(addTarget multipart.File, filePath string, contentType string) {
+	b.files = append(b.files, file{
 		file:        addTarget,
 		filePath:    filePath,
 		contentType: contentType,
 	})
 }
 
-func (st CloudStorage) Close() error {
-	return st.client.Close()
+func (b Bucket) Close() error {
+	return b.client.Close()
 }
 
-func (cs *CloudStorage) WriteFiles() error {
-	if len(cs.files) == 1 {
-		return cs.writeFile(cs.files[0])
+func (b *Bucket) WriteFiles() error {
+	if len(b.files) == 1 {
+		return b.writeFile(b.files[0])
 	}
 	var wg sync.WaitGroup
 	// エラーは1つだけ保存する
 	errChan := make(chan error, 1)
-	for _, f := range cs.files {
+	for _, f := range b.files {
 		wg.Add(1)
 		go func(f file) {
 			defer wg.Done()
-			if err := cs.writeFile(f); err != nil {
+			if err := b.writeFile(f); err != nil {
 				select {
 				case errChan <- err:
 				default:
@@ -78,9 +90,9 @@ func (cs *CloudStorage) WriteFiles() error {
 	return nil
 }
 
-func (cs CloudStorage) writeFile(f file) error {
-	obj := cs.Bucket.Object(f.filePath)
-	wc := obj.NewWriter(cs.ctx)
+func (b Bucket) writeFile(f file) error {
+	obj := b.handler.Object(f.filePath)
+	wc := obj.NewWriter(b.ctx)
 	defer wc.Close()
 	wc.ContentType = f.contentType
 	if _, err := io.Copy(wc, f.file); err != nil {

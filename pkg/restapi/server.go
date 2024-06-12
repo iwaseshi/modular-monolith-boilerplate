@@ -46,35 +46,35 @@ func Run(port string) error {
 }
 
 type Context struct {
-	ginCtx *gin.Context
-	stdCtx context.Context
+	GinCtx *gin.Context
+	StdCtx context.Context
 }
 
 func NewContext(ginCtx *gin.Context) *Context {
 	return &Context{
-		ginCtx: ginCtx,
-		stdCtx: ginCtx.Request.Context(),
+		GinCtx: ginCtx,
+		StdCtx: ginCtx.Request.Context(),
 	}
 }
 
 func (c *Context) Context() context.Context {
-	return c.stdCtx
+	return c.StdCtx
 }
 
 func (c *Context) BindJson(req any) (error *errors.ApiError) {
-	if err := c.ginCtx.BindJSON(req); err != nil {
-		logger.WithCtx(c.stdCtx).Error("Error binding request: %s", err.Error())
+	if err := c.GinCtx.BindJSON(req); err != nil {
+		logger.WithCtx(c.StdCtx).Error("Error binding request: %s", err.Error())
 		return errors.NewBusinessError(err)
 	}
 	return nil
 }
 
 func (c *Context) FormFile(key string) (multipart.File, *multipart.FileHeader, error) {
-	return c.ginCtx.Request.FormFile(key)
+	return c.GinCtx.Request.FormFile(key)
 }
 
 func (c *Context) ApiResponse(statusCode int, body interface{}) {
-	c.ginCtx.JSON(statusCode, body)
+	c.GinCtx.JSON(statusCode, body)
 }
 
 type HandlerFunc func(*Context)

@@ -1,8 +1,8 @@
 package controller
 
 import (
+	"modular-monolith-boilerplate/pkg/adapter"
 	"modular-monolith-boilerplate/pkg/di"
-	"modular-monolith-boilerplate/pkg/gcp"
 	"modular-monolith-boilerplate/pkg/restapi"
 	"net/http"
 )
@@ -21,10 +21,13 @@ func RegisterRouting() {
 }
 
 type FileServiceController struct {
+	storage adapter.Storage
 }
 
-func NewFileServiceController() *FileServiceController {
-	return &FileServiceController{}
+func NewFileServiceController(storage adapter.Storage) *FileServiceController {
+	return &FileServiceController{
+		storage: storage,
+	}
 }
 
 func (fsc *FileServiceController) Upload(c *restapi.Context) {
@@ -36,15 +39,15 @@ func (fsc *FileServiceController) Upload(c *restapi.Context) {
 	}
 	defer file.Close()
 
-	storage, err := gcp.NewCloudStorage(c.Context(), "fileservice-app-bucket")
+	bucket, err := fsc.storage.NewBucketConnection(c.Context(), "fileservice-app-bucket")
 	if err != nil {
 		c.ApiResponse(http.StatusInternalServerError, err.Error())
 		return
 	}
-	defer storage.Close()
+	defer bucket.Close()
 
-	storage.AddFile(file, header.Filename, header.Header.Get("Content-Type"))
-	err = storage.WriteFiles()
+	bucket.AddFile(file, header.Filename, header.Header.Get("Content-Type"))
+	err = bucket.WriteFiles()
 	if err != nil {
 		c.ApiResponse(http.StatusInternalServerError, err.Error())
 		return
