@@ -18,7 +18,7 @@ func init() {
 type CloudStorage struct {
 }
 
-type Bucket struct {
+type bucket struct {
 	handler *storage.BucketHandle
 	client  *storage.Client
 	ctx     context.Context
@@ -35,23 +35,23 @@ func NewCloudStorage() adapter.Storage {
 	return &CloudStorage{}
 }
 
-func (cs *CloudStorage) NewBucketConnection(ctx context.Context, bucket string) (adapter.Bucket, error) {
+func (cs *CloudStorage) NewBucketConnection(ctx context.Context, bucketName string) (adapter.Bucket, error) {
 	client, err := storage.NewClient(ctx)
 	if err != nil {
 		return nil, err
 	}
-	_, err = client.Bucket(bucket).Attrs(ctx)
+	_, err = client.Bucket(bucketName).Attrs(ctx)
 	if err != nil {
 		return nil, err
 	}
-	return &Bucket{
-		handler: client.Bucket(bucket),
+	return &bucket{
+		handler: client.Bucket(bucketName),
 		client:  client,
 		ctx:     ctx,
 	}, nil
 }
 
-func (b *Bucket) AddFile(addTarget multipart.File, filePath string, contentType string) {
+func (b *bucket) AddFile(addTarget multipart.File, filePath string, contentType string) {
 	b.files = append(b.files, file{
 		file:        addTarget,
 		filePath:    filePath,
@@ -59,11 +59,11 @@ func (b *Bucket) AddFile(addTarget multipart.File, filePath string, contentType 
 	})
 }
 
-func (b Bucket) Close() error {
+func (b bucket) Close() error {
 	return b.client.Close()
 }
 
-func (b *Bucket) WriteFiles() error {
+func (b *bucket) WriteFiles() error {
 	if len(b.files) == 1 {
 		return b.writeFile(b.files[0])
 	}
@@ -90,7 +90,7 @@ func (b *Bucket) WriteFiles() error {
 	return nil
 }
 
-func (b Bucket) writeFile(f file) error {
+func (b bucket) writeFile(f file) error {
 	obj := b.handler.Object(f.filePath)
 	wc := obj.NewWriter(b.ctx)
 	defer wc.Close()
