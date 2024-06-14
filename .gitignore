@@ -4,3 +4,4 @@ bin/
 cdktf.out
 storage_key.json
 
+_sample/
