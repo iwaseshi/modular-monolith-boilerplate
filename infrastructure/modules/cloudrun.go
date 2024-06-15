@@ -13,7 +13,7 @@ import (
 
 func NewCloudRun(stack cdktf.TerraformStack, name string, account serviceaccount.ServiceAccount) {
 
-	image := fmt.Sprintf("gcr.io/%s/%s/app", infrastructure.ProjectName, name)
+	image := fmt.Sprintf("gcr.io/%s/%s/app:latest", infrastructure.ProjectName, name)
 	cloudrun := cloudrunservice.NewCloudRunService(stack, jsii.String("cloudrun"), &cloudrunservice.CloudRunServiceConfig{
 		Location: jsii.String(infrastructure.Region),
 		Name:     jsii.String(name + "-service"),
