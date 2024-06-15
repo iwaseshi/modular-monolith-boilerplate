@@ -18,7 +18,17 @@ func DeployResources(stack cdktf.TerraformStack) cdktf.TerraformStack {
 		DisplayName: jsii.String(ServiceName + " account"),
 	})
 
-	modules.NewStorageBucket(stack, ServiceName, account)
+	policyData := modules.NewPolicyData([]modules.Binding{
+		{
+			Role:    "roles/storage.admin",
+			Members: []string{"serviceAccount:" + *account.Email()},
+		},
+		{
+			Role:    "roles/storage.legacyObjectReader",
+			Members: []string{"allUsers"},
+		},
+	})
+	modules.NewStorageBucket(stack, ServiceName, *policyData)
 	modules.NewCloudRun(stack, ServiceName, account)
 
 	return stack
