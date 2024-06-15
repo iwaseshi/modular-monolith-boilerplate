@@ -2,6 +2,7 @@ package gcp
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"mime/multipart"
 	"modular-monolith-boilerplate/pkg/adapter"
@@ -42,7 +43,7 @@ func (cs *CloudStorage) NewBucketConnection(ctx context.Context, name string) (a
 	}
 	_, err = client.Bucket(name).Attrs(ctx)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("%s not found: %v", name, err)
 	}
 	return &bucket{
 		handler: client.Bucket(name),
