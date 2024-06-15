@@ -19,7 +19,7 @@ func NewStorageBucket(stack cdktf.TerraformStack, name string, account serviceac
 		ForceDestroy: jsii.Bool(true),
 	})
 
-	policyData := NewPolicyData([]Binding{
+	policyDataJSON, err := NewPolicyData([]Binding{
 		{
 			Role:    "roles/storage.admin",
 			Members: []string{"serviceAccount:" + *account.Email()},
@@ -28,8 +28,7 @@ func NewStorageBucket(stack cdktf.TerraformStack, name string, account serviceac
 			Role:    "roles/storage.legacyObjectReader",
 			Members: []string{"allUsers"},
 		},
-	})
-	policyDataJSON, err := policyData.ToJSON()
+	}).ToJSON()
 	if err != nil {
 		log.Fatalf("Error marshalling policy data: %v", err)
 	}
