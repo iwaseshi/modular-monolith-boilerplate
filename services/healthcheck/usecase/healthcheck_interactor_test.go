@@ -10,11 +10,11 @@ import (
 )
 
 func TestHealthCheckInteractor_Ping(t *testing.T) {
-	var ctx *restapi.Context
+	ctx := &restapi.Context{}
 
 	hci := usecase.NewHealthCheckInteractor()
 
-	res, err := hci.Ping(ctx)
+	res, err := hci.Ping(ctx.StdCtx)
 
 	assert.Nil(t, err)
 	assert.NotNil(t, res)
@@ -22,14 +22,14 @@ func TestHealthCheckInteractor_Ping(t *testing.T) {
 }
 
 func TestHealthCheckInteractor_Readiness(t *testing.T) {
-	var ctx *restapi.Context
+	ctx := &restapi.Context{}
 
 	hci := usecase.NewHealthCheckInteractor()
 
 	req := &domain.ReadyRequest{
 		Shout: "Are you ready?",
 	}
-	res, err := hci.Readiness(ctx, req)
+	res, err := hci.Readiness(ctx.StdCtx, req)
 
 	assert.Nil(t, err)
 	assert.NotNil(t, res)
@@ -38,13 +38,13 @@ func TestHealthCheckInteractor_Readiness(t *testing.T) {
 }
 
 func TestHealthCheckInteractor_Readiness_Shout(t *testing.T) {
-	var ctx *restapi.Context
+	ctx := &restapi.Context{}
 	hci := usecase.NewHealthCheckInteractor()
 
 	req := &domain.ReadyRequest{
 		Shout: "not ready",
 	}
-	res, err := hci.Readiness(ctx, req)
+	res, err := hci.Readiness(ctx.StdCtx, req)
 
 	assert.Nil(t, err)
 	assert.NotNil(t, res)

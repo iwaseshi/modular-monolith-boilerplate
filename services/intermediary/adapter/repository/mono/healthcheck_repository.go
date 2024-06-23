@@ -23,7 +23,7 @@ func NewMonoHealthCheckRepository(healthCheckUseCase usecase.HealthCheckUseCase)
 }
 
 func (hcr *MonoHealthCheckRepository) Ping(c *restapi.Context) (*string, *errors.ApiError) {
-	message, err := hcr.healthCheckUseCase.Ping(c)
+	message, err := hcr.healthCheckUseCase.Ping(c.StdCtx)
 	if err != nil {
 		return nil, err
 	}
