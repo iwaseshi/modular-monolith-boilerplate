@@ -3,22 +3,27 @@ package service
 import (
 	"context"
 	pb "modular-monolith-boilerplate/pkg/adapter/rpc"
+	"modular-monolith-boilerplate/pkg/di"
 	"modular-monolith-boilerplate/services/healthcheck/domain"
 	"modular-monolith-boilerplate/services/healthcheck/usecase"
 )
 
-type server struct {
+func init() {
+	di.RegisterBean(NewServer)
+}
+
+type HealthCheckServer struct {
 	pb.UnimplementedHealthCheckServiceServer
 	healthCheckUseCase usecase.HealthCheckUseCase
 }
 
-func NewServer(healthCheckUseCase usecase.HealthCheckUseCase) *server {
-	return &server{
+func NewServer(healthCheckUseCase usecase.HealthCheckUseCase) *HealthCheckServer {
+	return &HealthCheckServer{
 		healthCheckUseCase: healthCheckUseCase,
 	}
 }
 
-func (s *server) Ping(ctx context.Context, in *pb.PingRequest) (*pb.PingResponse, error) {
+func (s *HealthCheckServer) Ping(ctx context.Context, in *pb.PingRequest) (*pb.PingResponse, error) {
 	message, err := s.healthCheckUseCase.Ping(ctx)
 	if err != nil {
 		return nil, err.Unwrap()
@@ -26,7 +31,7 @@ func (s *server) Ping(ctx context.Context, in *pb.PingRequest) (*pb.PingResponse
 	return &pb.PingResponse{Message: *message}, nil
 }
 
-func (s *server) Readiness(ctx context.Context, in *pb.ReadyRequest) (*pb.ReadyResponse, error) {
+func (s *HealthCheckServer) Readiness(ctx context.Context, in *pb.ReadyRequest) (*pb.ReadyResponse, error) {
 	req := &domain.ReadyRequest{}
 	// Bind JSON request to req (if necessary)
 	res, err := s.healthCheckUseCase.Readiness(ctx, req)
