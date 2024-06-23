@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package healthcheck;
+
+option go_package = "pkg/adapter/rpc/healthcheck";
+
+service HealthCheckService {
+    rpc Ping(PingRequest) returns (PingResponse);
+    rpc Readiness(ReadyRequest) returns (ReadyResponse);
+}
+
+message PingRequest {}
+
+message PingResponse {
+    string message = 1;
+}
+
+message ReadyRequest {
+  // Add fields for ReadyRequest if any
+}
+
+message ReadyResponse {
+    string message = 1;
+}
