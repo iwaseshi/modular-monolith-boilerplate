@@ -2,6 +2,7 @@ package restapi
 
 import (
 	"context"
+	"fmt"
 	"mime/multipart"
 	"modular-monolith-boilerplate/pkg/errors"
 	"modular-monolith-boilerplate/pkg/logger"
@@ -11,7 +12,7 @@ import (
 )
 
 const (
-	DefaultPort = "8080"
+	DefaultPort = 8080
 )
 
 var (
@@ -38,11 +39,8 @@ func (rg *routerGroup) RegisterPOST(postPath string, fun HandlerFunc) {
 	rg.group.POST(postPath, convertHandler(fun))
 }
 
-func Run(port string) error {
-	if port == "" {
-		port = DefaultPort
-	}
-	return router.Run(":" + port)
+func Run(port int) error {
+	return router.Run(fmt.Sprintf(":%d", port))
 }
 
 type Context struct {
