@@ -14,5 +14,5 @@ import (
 func main() {
 	healthcheck.RegisterRouting()
 	intermediary.RegisterRouting()
-	_ = restapi.Run("8080")
+	_ = restapi.Run(8080)
 }

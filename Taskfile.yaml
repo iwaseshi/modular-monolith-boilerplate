@@ -6,6 +6,19 @@ env:
   REGION: asia-northeast1
 
 tasks:
+  protogen:
+    desc: "Generate gRPC code from .proto file"
+    cmds:
+      - |
+        protoc --go_out=../../pkg/adapter/pb --go_opt=paths=source_relative \
+        --go-grpc_out=../../pkg/adapter/pb --go-grpc_opt=paths=source_relative \
+        {{.PROTO_FILE}}
+    dir: ./docs/proto
+    vars:
+      PROTO_FILE:
+        sh: echo "{{.CLI_ARGS}}" | cut -d ' ' -f 1
+    silent: true
+
   build-intermediary-micro:
     cmds:
       - cmd: go build -tags=micro -o ./bin/intermediary_micro ./services/intermediary/main.go

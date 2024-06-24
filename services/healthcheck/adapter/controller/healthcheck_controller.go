@@ -32,7 +32,7 @@ func NewHealthCheckController(healthCheckUseCase usecase.HealthCheckUseCase) *He
 }
 
 func (hcc *HealthCheckController) Ping(c *restapi.Context) {
-	message, err := hcc.healthCheckUseCase.Ping(c)
+	message, err := hcc.healthCheckUseCase.Ping(c.StdCtx)
 	if err != nil {
 		c.ApiResponse(500, err)
 		return
@@ -47,7 +47,7 @@ func (hcc *HealthCheckController) Readiness(c *restapi.Context) {
 		c.ApiResponse(400, err)
 		return
 	}
-	res, err := hcc.healthCheckUseCase.Readiness(c, req)
+	res, err := hcc.healthCheckUseCase.Readiness(c.StdCtx, req)
 	if err != nil {
 		c.ApiResponse(500, err)
 		return
