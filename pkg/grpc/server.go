@@ -28,6 +28,7 @@ func Run(port int) {
 	if err != nil {
 		panic(err)
 	}
+	defer listener.Close()
 	env := os.Getenv("ENVIRONMENT")
 	if env != "Prod" {
 		reflection.Register(server)
