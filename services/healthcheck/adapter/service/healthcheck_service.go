@@ -11,8 +11,8 @@ import (
 
 func init() {
 	di.RegisterBean(NewServer)
-	_ = di.GetContainer().Invoke(func(server *HealthCheckServer) {
-		pb.RegisterHealthCheckServiceServer(grpc.GetServer(), server)
+	_ = di.GetContainer().Invoke(func(s *HealthCheckServer) {
+		pb.RegisterHealthCheckServiceServer(grpc.GetServer(), s)
 	})
 }
 
