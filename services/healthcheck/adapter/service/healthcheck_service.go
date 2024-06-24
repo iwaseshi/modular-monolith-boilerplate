@@ -2,14 +2,18 @@ package service
 
 import (
 	"context"
-	pb "modular-monolith-boilerplate/pkg/adapter/rpc"
+	pb "modular-monolith-boilerplate/pkg/adapter/pb"
 	"modular-monolith-boilerplate/pkg/di"
+	"modular-monolith-boilerplate/pkg/grpc"
 	"modular-monolith-boilerplate/services/healthcheck/domain"
 	"modular-monolith-boilerplate/services/healthcheck/usecase"
 )
 
 func init() {
 	di.RegisterBean(NewServer)
+	_ = di.GetContainer().Invoke(func(server *HealthCheckServer) {
+		pb.RegisterHealthCheckServiceServer(grpc.GetServer(), server)
+	})
 }
 
 type HealthCheckServer struct {

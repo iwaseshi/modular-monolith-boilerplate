@@ -10,8 +10,8 @@ tasks:
     desc: "Generate gRPC code from .proto file"
     cmds:
       - |
-        protoc --go_out=../../pkg/adapter/rpc --go_opt=paths=source_relative \
-        --go-grpc_out=../../pkg/adapter/rpc --go-grpc_opt=paths=source_relative \
+        protoc --go_out=../../pkg/adapter/pb --go_opt=paths=source_relative \
+        --go-grpc_out=../../pkg/adapter/pb --go-grpc_opt=paths=source_relative \
         {{.PROTO_FILE}}
     dir: ./docs/proto
     vars:
