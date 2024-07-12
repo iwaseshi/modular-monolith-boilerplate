@@ -11,12 +11,17 @@ import (
 	"github.com/hashicorp/terraform-cdk-go/cdktf"
 )
 
-func NewCloudRun(stack cdktf.TerraformStack, name string, account serviceaccount.ServiceAccount) {
+type CloudRun struct {
+	Name    string
+	Account serviceaccount.ServiceAccount
+	Traffic []*cloudrunservice.CloudRunServiceTraffic
+}
 
-	image := fmt.Sprintf("gcr.io/%s/%s/app:latest", infrastructure.ProjectName, name)
+func (cr CloudRun) New(stack cdktf.TerraformStack) {
+	image := fmt.Sprintf("gcr.io/%s/%s/app:latest", infrastructure.ProjectName, cr.Name)
 	cloudrun := cloudrunservice.NewCloudRunService(stack, jsii.String("cloudrun"), &cloudrunservice.CloudRunServiceConfig{
 		Location: jsii.String(infrastructure.Region),
-		Name:     jsii.String(name + "-service"),
+		Name:     jsii.String(cr.Name + "-service"),
 		Template: &cloudrunservice.CloudRunServiceTemplate{
 			Spec: &cloudrunservice.CloudRunServiceTemplateSpec{
 				Containers: []*cloudrunservice.CloudRunServiceTemplateSpecContainers{
@@ -24,11 +29,11 @@ func NewCloudRun(stack cdktf.TerraformStack, name string, account serviceaccount
 						Image: jsii.String(image),
 					},
 				},
-				ServiceAccountName: account.Email(),
+				ServiceAccountName: cr.Account.Email(),
 			},
 		},
+		Traffic: cr.Traffic,
 	})
-
 	cloudrunserviceiambinding.NewCloudRunServiceIamBinding(stack, jsii.String("cloudrun_iam"), &cloudrunserviceiambinding.CloudRunServiceIamBindingConfig{
 		Service:  cloudrun.Name(),
 		Location: cloudrun.Location(),

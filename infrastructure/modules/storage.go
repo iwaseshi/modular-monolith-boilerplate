@@ -11,16 +11,21 @@ import (
 	"github.com/hashicorp/terraform-cdk-go/cdktf"
 )
 
-func NewStorageBucket(stack cdktf.TerraformStack, name string, policyData PolicyData) {
+type StorageBucket struct {
+	Name   string
+	Policy PolicyData
+}
+
+func (sb StorageBucket) New(stack cdktf.TerraformStack) {
 	bucket := storagebucket.NewStorageBucket(stack, jsii.String("gcs_bucket"), &storagebucket.StorageBucketConfig{
 		Location:     jsii.String(infrastructure.Region),
-		Name:         jsii.String(name + "-app-bucket"),
+		Name:         jsii.String(sb.Name + "-app-bucket"),
 		ForceDestroy: jsii.Bool(true),
 	})
 
 	storagebucketiampolicy.NewStorageBucketIamPolicy(stack, jsii.String("sa_iam"), &storagebucketiampolicy.StorageBucketIamPolicyConfig{
 		Bucket:     bucket.Name(),
-		PolicyData: jsii.String(policyData.ToJSON()),
+		PolicyData: jsii.String(sb.Policy.ToJSON()),
 	})
 
 }
@@ -32,10 +37,6 @@ type Binding struct {
 
 type PolicyData struct {
 	Bindings []Binding `json:"bindings"`
-}
-
-func NewPolicyData(bindings []Binding) *PolicyData {
-	return &PolicyData{Bindings: bindings}
 }
 
 func (p *PolicyData) ToJSON() string {

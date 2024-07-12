@@ -8,28 +8,32 @@ import (
 )
 
 const (
-	ServiceName = "fileservice"
+	Name = "fileservice"
 )
 
 func DeployResources(stack cdktf.TerraformStack) cdktf.TerraformStack {
-
 	account := serviceaccount.NewServiceAccount(stack, jsii.String("app_sa"), &serviceaccount.ServiceAccountConfig{
-		AccountId:   jsii.String(ServiceName + "-account"),
-		DisplayName: jsii.String(ServiceName + " account"),
+		AccountId:   jsii.String(Name + "-account"),
+		DisplayName: jsii.String(Name + " account"),
 	})
-
-	policyData := modules.NewPolicyData([]modules.Binding{
-		{
-			Role:    "roles/storage.admin",
-			Members: []string{"serviceAccount:" + *account.Email()},
+	modules.StorageBucket{
+		Name: Name,
+		Policy: modules.PolicyData{
+			Bindings: []modules.Binding{
+				{
+					Role:    "roles/storage.admin",
+					Members: []string{"serviceAccount:" + *account.Email()},
+				},
+				{
+					Role:    "roles/storage.legacyObjectReader",
+					Members: []string{"allUsers"},
+				},
+			},
 		},
-		{
-			Role:    "roles/storage.legacyObjectReader",
-			Members: []string{"allUsers"},
-		},
-	})
-	modules.NewStorageBucket(stack, ServiceName, *policyData)
-	modules.NewCloudRun(stack, ServiceName, account)
-
+	}.New(stack)
+	modules.CloudRun{
+		Name:    Name,
+		Account: account,
+	}.New(stack)
 	return stack
 }
