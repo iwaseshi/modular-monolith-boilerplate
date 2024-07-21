@@ -21,7 +21,7 @@ func DeployResources(stack cdktf.TerraformStack) cdktf.TerraformStack {
 		Policy: modules.PolicyData{
 			Bindings: []modules.Binding{
 				{
-					Role:    modules.RoleStorageAdmin,
+					Role:    modules.RoleStorageObjectAdmin,
 					Members: []string{"serviceAccount:" + *account.Email()},
 				},
 				{

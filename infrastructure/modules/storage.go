@@ -41,8 +41,10 @@ func (r Role) Role() string {
 }
 
 const (
-	RoleStorageAdmin        Role = "roles/storage.admin"
-	RoleStorageObjectViewer Role = "roles/storage.objectViewer"
+	RoleStorageAdmin         Role = "roles/storage.admin"
+	RoleStorageObjectAdmin   Role = "roles/storage.objectAdmin"
+	RoleStorageObjectViewer  Role = "roles/storage.objectViewer"
+	RoleStorageObjectCreator Role = "roles/storage.objectCreator"
 )
 
 type Binding struct {
