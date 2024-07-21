@@ -21,11 +21,11 @@ func DeployResources(stack cdktf.TerraformStack) cdktf.TerraformStack {
 		Policy: modules.PolicyData{
 			Bindings: []modules.Binding{
 				{
-					Role:    "roles/storage.admin",
+					Role:    modules.RoleStorageAdmin,
 					Members: []string{"serviceAccount:" + *account.Email()},
 				},
 				{
-					Role:    "roles/storage.legacyObjectReader",
+					Role:    modules.RoleStorageObjectViewer,
 					Members: []string{"allUsers"},
 				},
 			},

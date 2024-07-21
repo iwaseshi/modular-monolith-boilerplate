@@ -30,8 +30,23 @@ func (sb StorageBucket) New(stack cdktf.TerraformStack) {
 
 }
 
+type role interface {
+	Role() string
+}
+
+type Role string
+
+func (r Role) Role() string {
+	return string(r)
+}
+
+const (
+	RoleStorageAdmin        Role = "roles/storage.admin"
+	RoleStorageObjectViewer Role = "roles/storage.objectViewer"
+)
+
 type Binding struct {
-	Role    string   `json:"role"`
+	Role    role     `json:"role"`
 	Members []string `json:"members"`
 }
 
