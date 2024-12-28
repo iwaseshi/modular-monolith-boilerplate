@@ -1,6 +1,6 @@
 module modular-monolith-boilerplate/pkg
 
-go 1.22.4
+go 1.23.4
 
 require (
 	cloud.google.com/go/storage v1.42.0
