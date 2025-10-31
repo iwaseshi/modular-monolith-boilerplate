@@ -3,7 +3,7 @@ module modular-monolith-boilerplate/pkg
 go 1.22.4
 
 require (
-	cloud.google.com/go/storage v1.42.0
+	cloud.google.com/go/storage v1.57.1
 	github.com/gin-gonic/gin v1.10.0
 	go.uber.org/dig v1.18.0
 	go.uber.org/zap v1.27.0
